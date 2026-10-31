@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Validate the Mao situation coach skill's Markdown content."""
+"""Validate the Mao situation coach skill's Markdown content.
+
+Checks are structural only: labels, fields, and metadata that must be
+present. A passing result does not verify that quoted or paraphrased
+text matches the edition; verbatim accuracy always needs human
+verification against the registered edition.
+"""
 
 import re
 import sys
@@ -62,6 +68,16 @@ FORBIDDEN_DEPENDENCIES = tuple(
     for dependency in _FORBIDDEN_DEPENDENCY_CODE_POINTS
 )
 NON_ARTICLE_SOURCE_TITLES = {"毛泽东选集"}
+GRADE_ALLOWED_EXPRESSIONS = {
+    "A": ("逐字引文", "有来源释义"),
+    "B": ("逐字引文", "有来源释义"),
+    "C": ("现代转译",),
+}
+SOURCE_METADATA_REQUIREMENTS = (
+    ("卷次", re.compile(r"第[一二三四1-4]卷")),
+    ("写作日期", re.compile(r"\d{4}\s*年")),
+    ("核心版本", re.compile(r"人民出版社\s*1991\s*年")),
+)
 REQUIRED_PROTOCOL_SECTIONS = (
     "Entry Screening",
     "Case Sharpening Rounds",
@@ -72,8 +88,19 @@ REQUIRED_PROTOCOL_SECTIONS = (
 )
 REQUIRED_BOUNDARY_SECTIONS = (
     "Crisis Response",
+    "Power Imbalance Screening",
     "Instruction Precedence",
     "Session Data",
+)
+REQUIRED_REFERENCE_FILES = (
+    "dialogue-protocol.md",
+    "boundaries.md",
+    "model-router.md",
+    "source-catalog.md",
+    "epistemology-models.md",
+    "contradiction-models.md",
+    "strategy-models.md",
+    "organization-models.md",
 )
 
 
@@ -81,6 +108,89 @@ def markdown_files(skill_dir):
     """Return the root skill document and reference documents in stable order."""
     skill_dir = Path(skill_dir)
     return [skill_dir / "SKILL.md", *sorted((skill_dir / "references").glob("*.md"))]
+
+
+def validate_model_documents(documents, canonical_model_files):
+    """Validate model blocks in documents; return errors and canonical names.
+
+    Local validation entry for model-card content: it checks fields and
+    sources of every "## Model:" block, while package-level completeness
+    (file manifest and the full model register) stays in validate().
+    """
+    errors = []
+    model_names = []
+    for path, content in documents:
+        for model in re.finditer(
+            r"^## Model: (?P<name>[^\n]*)(?:\n|$)(?P<body>.*?)(?=^## |\Z)",
+            content,
+            re.MULTILINE | re.DOTALL,
+        ):
+            model_name = model.group("name")
+            if path in canonical_model_files:
+                model_names.append(model_name)
+            block = model.group(0)
+            for field in REQUIRED_MODEL_FIELDS:
+                field_section = re.search(
+                    rf"^### {re.escape(field)}[ \t]*$\n?(?P<body>.*?)(?=^### |\Z)",
+                    block,
+                    re.MULTILINE | re.DOTALL,
+                )
+                if not field_section:
+                    errors.append(f"{path}: model {model_name} is missing {field}")
+                elif not field_section.group("body").strip():
+                    errors.append(
+                        f"{path}: model {model_name} has empty content for {field}"
+                    )
+            source_section = re.search(
+                r"^### 原文出处[ \t]*$\n?(?P<body>.*?)(?=^### |\Z)",
+                block,
+                re.MULTILINE | re.DOTALL,
+            )
+            source_content = source_section.group("body") if source_section else ""
+            grade_match = re.search(r"证据等级：([ABC]) 级", source_content)
+            expression_match = re.search(
+                r"表达方式：(逐字引文|有来源释义|现代转译)", source_content
+            )
+            if not grade_match:
+                errors.append(
+                    f"{path}: model {model_name} 原文出处 must include "
+                    "证据等级：[ABC] 级"
+                )
+            if not expression_match:
+                errors.append(
+                    f"{path}: model {model_name} 原文出处 must include "
+                    "表达方式：逐字引文/有来源释义/现代转译"
+                )
+            if grade_match and expression_match:
+                grade = grade_match.group(1)
+                expression = expression_match.group(1)
+                if expression not in GRADE_ALLOWED_EXPRESSIONS[grade]:
+                    errors.append(
+                        f"{path}: model {model_name} 证据等级 {grade} 级"
+                        f"不能搭配表达方式 {expression}"
+                    )
+            if grade_match and grade_match.group(1) in ("A", "B"):
+                grade = grade_match.group(1)
+                article_titles = {
+                    title.strip()
+                    for title in re.findall(r"《([^》]+)》", source_content)
+                    if title.strip() not in NON_ARTICLE_SOURCE_TITLES
+                }
+                if not article_titles:
+                    errors.append(
+                        f"{path}: model {model_name} {grade} 级原文出处缺少篇名"
+                    )
+                for label, pattern in SOURCE_METADATA_REQUIREMENTS:
+                    if not pattern.search(source_content):
+                        errors.append(
+                            f"{path}: model {model_name} {grade} 级原文出处缺少{label}"
+                        )
+                if grade == "B" and len(article_titles) < 2:
+                    errors.append(
+                        f"{path}: model {model_name} B 级原文出处"
+                        "必须列出至少两篇不同原著"
+                    )
+    return errors, model_names
 
 
 def validate(skill_dir):
@@ -99,6 +209,13 @@ def validate(skill_dir):
     for path in markdown_files(skill_dir):
         if path.exists():
             documents.append((path, path.read_text(encoding="utf-8")))
+
+    for file_name in REQUIRED_REFERENCE_FILES:
+        target = skill_dir / "references" / file_name
+        if not target.is_file():
+            errors.append(f"{target}: required file is missing: {file_name}")
+        elif not target.read_text(encoding="utf-8").strip():
+            errors.append(f"{target}: required file is empty: {file_name}")
 
     for path, content in documents:
         for dependency in FORBIDDEN_DEPENDENCIES:
@@ -129,72 +246,25 @@ def validate(skill_dir):
                 )
 
     canonical_model_files = set((skill_dir / "references").glob("*-models.md"))
-    model_names = []
-    for path, content in documents:
-        for model in re.finditer(
-            r"^## Model: (?P<name>[^\n]*)(?:\n|$)(?P<body>.*?)(?=^## |\Z)",
-            content,
-            re.MULTILINE | re.DOTALL,
-        ):
-            model_name = model.group("name")
-            if path in canonical_model_files:
-                model_names.append(model_name)
-            block = model.group(0)
-            for field in REQUIRED_MODEL_FIELDS:
-                if not re.search(rf"^### {re.escape(field)}\s*$", block, re.MULTILINE):
-                    errors.append(f"{path}: model {model_name} is missing {field}")
-            source_section = re.search(
-                r"^### 原文出处\s*$\n(.*?)(?=^### |\Z)",
-                block,
-                re.MULTILINE | re.DOTALL,
-            )
-            source_content = source_section.group(1) if source_section else ""
-            grade_match = re.search(r"证据等级：([ABC]) 级", source_content)
-            expression_match = re.search(
-                r"表达方式：(逐字引文|有来源释义|现代转译)", source_content
-            )
-            if not grade_match:
-                errors.append(
-                    f"{path}: model {model_name} 原文出处 must include "
-                    "证据等级：[ABC] 级"
-                )
-            if not expression_match:
-                errors.append(
-                    f"{path}: model {model_name} 原文出处 must include "
-                    "表达方式：逐字引文/有来源释义/现代转译"
-                )
-            if (
-                grade_match
-                and grade_match.group(1) == "B"
-                and expression_match
-                and expression_match.group(1) == "有来源释义"
-            ):
-                article_titles = {
-                    title.strip()
-                    for title in re.findall(r"《([^》]+)》", source_content)
-                    if title.strip() not in NON_ARTICLE_SOURCE_TITLES
-                }
-                if len(article_titles) < 2:
-                    errors.append(
-                        f"{path}: model {model_name} B 级有来源释义的原文出处"
-                        "必须列出至少两篇不同原著"
-                    )
+    document_errors, model_names = validate_model_documents(
+        documents, canonical_model_files
+    )
+    errors.extend(document_errors)
 
-    if canonical_model_files:
-        expected = set(EXPECTED_MODEL_NAMES)
-        actual = set(model_names)
-        if len(model_names) != len(EXPECTED_MODEL_NAMES):
-            errors.append(
-                f"{skill_dir}: expected 31 models, found {len(model_names)}"
-            )
-        for name in EXPECTED_MODEL_NAMES:
-            count = model_names.count(name)
-            if count == 0:
-                errors.append(f"{skill_dir}: missing model: {name}")
-            elif count > 1:
-                errors.append(f"{skill_dir}: duplicate model: {name}")
-        for name in sorted(actual - expected):
-            errors.append(f"{skill_dir}: unexpected model: {name}")
+    expected = set(EXPECTED_MODEL_NAMES)
+    actual = set(model_names)
+    if len(model_names) != len(EXPECTED_MODEL_NAMES):
+        errors.append(
+            f"{skill_dir}: expected 31 models, found {len(model_names)}"
+        )
+    for name in EXPECTED_MODEL_NAMES:
+        count = model_names.count(name)
+        if count == 0:
+            errors.append(f"{skill_dir}: missing model: {name}")
+        elif count > 1:
+            errors.append(f"{skill_dir}: duplicate model: {name}")
+    for name in sorted(actual - expected):
+        errors.append(f"{skill_dir}: unexpected model: {name}")
 
     return errors
 
