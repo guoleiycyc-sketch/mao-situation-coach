@@ -1,0 +1,4 @@
+interface:
+  display_name: "毛选教练"
+  short_description: "基于毛泽东选集方法论的复杂局面分析与多轮思考教练助手"
+  default_prompt: "请用 $mao-situation-coach 帮助我梳理当前局面，先区分事实、解释和未知信息，再选择合适的方法论进行多轮分析。"

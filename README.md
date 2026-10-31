@@ -1,0 +1,321 @@
+# 毛选教练（Mao Situation Coach）
+
+> 帮助使用者看清复杂现实局面，而不是替使用者给答案。
+
+毛选教练是一个可独立运行的 Codex Skill，能够在自身目录内完成信息入口、整理、分析与收束。它把历史文本中的认识方法整理为有条件、有证据边界的现代局面分析工具，帮助使用者区分事实与解释、看见关系和变化，并保留可被新证据修正的判断。
+
+## 它解决什么问题
+
+当事实、转述、解释和愿望混在一起，问题往往不是“缺一个结论”，而是尚未形成一张可靠的局面图。毛选教练适合协助梳理：
+
+- 事情到底发生了什么，哪些仍未核实；
+- 多个参与者、资源、限制和结果如何相互影响；
+- 当前真正阻塞判断的中心、阶段或力量变化是什么；
+- 应该继续观察什么，哪些事实会推翻暂时判断；
+- 何时已有条件讨论行动，何时必须停在“尚不可判断”。
+
+默认产出是可持续校正的**动态局面图**，不是裁决或定论，也不是把某个模型名当成确定答案。
+
+## 核心原则
+
+- **先调查，后判断**：不发明事实、动机、数据、期限或确定性。
+- **分清认识层次**：把陈述分别标为已确认事实、他人转述、使用者解释、预测或假设、感受和愿望。
+- **最小模型路由**：每轮最多使用 1 个主模型和 1 个辅助模型，只处理当前最先阻塞判断的认知障碍。
+- **门槛先于结论**：信息门槛不足时，指出缺口、冲突证据和不同结果将如何改变判断，而不是强行套模型。
+- **判断与行动分开**：仅当使用者明确要求，且相关模型的信息门槛满足时，才提供条件式行动、调查、验证或决策建议。
+- **切换须经确认**：先说明新证据、切换理由及结论范围的变化，征得使用者同意后再更换模型。
+- **普通语言优先**：先说清发生了什么、为什么暂时这样看、还不知道什么，再标注模型和来源。
+- **现代边界明确**：普通人际、职业、用户、组织、合作或竞争关系不用敌我、消灭、歼灭、战争、根据地或阵营类语言。
+
+详细执行约束见 [Skill 入口](skill/mao-situation-coach/SKILL.md) 与 [安全边界](skill/mao-situation-coach/references/boundaries.md)。
+
+## 方法论结构
+
+Skill 包含四个模型族、共 31 个模型。下面仅列名称；模型的命题、适用条件、失效条件、证据与转译边界以仓库中的模型卡为准。
+
+1. **认识论（5）**：客观实际约束、调查先于判断、感性认识到理性认识、实践—认识—再实践、一般理论具体化。
+2. **矛盾分析（8）**：内部矛盾驱动发展、外因通过内因起作用、普遍性寓于特殊性、全面联系地认识对象、主要矛盾、矛盾主要方面、发展阶段、条件转化。
+3. **战略分析（12）**：动态力量对比、客观可能性与主观能动性、全局与局部、时间作为战略变量、空间作为战略变量、持久战、战略防御—相持—反攻、整体劣势中的局部优势、集中优势力量、积小胜为大胜、主动性、灵活性与计划性、保存和发展核心力量。
+4. **组织方法（6）**：从群众中来、到群众中去、领导骨干与广大群众结合、一般号召与个别指导结合、统一战线、统一中的独立自主、群众路线。
+
+[模型路由器](skill/mao-situation-coach/references/model-router.md)依据认知障碍而非关键词选择模型，包含 10 条确定性分支：
+
+1. 事实与判断混在一起；
+2. 多个问题相互作用；
+3. 中心或阶段无法确定；
+4. 不清楚变化原因；
+5. 不知道坚持还是调整；
+6. 资源稀缺、任务过多；
+7. 多方利益或合作边界复杂；
+8. 管理层与一线脱节；
+9. 计划没有落实；
+10. 判断反复失败。
+
+默认分析次序是：事实可靠性 → 关系结构 → 主要矛盾 → 阶段 → 力量趋势 → 可改变条件。前序证据不足时不会为了形式完整而强行走完后续步骤。
+
+## 一次讨论如何进行
+
+1. **进入问题**：信息稀少时，从 5 个核心问题开始——最想看清什么、发生了什么、涉及谁及其利益与资源、有哪些不同判断、做过什么及结果如何。使用者已经说过的信息不会重复询问。
+2. **定向补充**：核心五问之外，根据问题结构最多增加 2 个定向问题；此后每轮只问 1—2 个最能推翻判断或区分竞争假设的问题。
+3. **建立底图**：对陈述分类，并检查问题对象、时间线、关键事实、参与者、力量与条件、行动与反馈六个维度。
+4. **选择模型**：先复述问题、证据与不确定性，再按认知障碍选择本轮 1 个主模型；只有第二个独立缺口会直接改变结论时，才加入 1 个辅助模型。
+5. **动态更新**：关键事实、关系、阶段或模型改变后更新局面图；每 2—4 轮做阶段小结。切换模型前解释原因、影响并等待确认。
+6. **收束复盘**：当局面已较清楚、继续判断需要新证据、使用者希望暂停或触及边界时，以动态局面图和方法复盘结束。
+
+完整对话规则见 [Dialogue Protocol](skill/mao-situation-coach/references/dialogue-protocol.md)。
+
+## 输出长什么样
+
+一次阶段性输出通常包含：
+
+- 当前问题及过程边界；
+- 陈述与证据分层；
+- 参与者的利益、资源、限制、依赖和影响；
+- 竞争假设及各自的支持证据、反对证据、缺失证据和判别信息；
+- 矛盾结构、阶段与力量趋势；
+- 可能改变局面的条件；
+- 当前较有把握、暂时倾向、证据不足和仍然未知的部分；
+- 本轮主模型、辅助模型的有限用途、来源、证据等级和表达方式；
+- 哪些反证或现实反馈会促使判断更新。
+
+收束时还会说明本次如何分层信息、为何选择或不选择某个模型，帮助使用者带走可复用的思考方法。
+
+## 适用场景
+
+- 创业或产品方向很多，不清楚哪些是真需求、哪些只是机会噪声；
+- 团队协作、组织推进或跨方合作中，信息、利益和执行反馈相互矛盾；
+- 长期投入已经产生部分反馈，但尚不确定应坚持、调整还是停止；
+- 资源有限、任务过多，需要先看清全局价值、依赖与底线能力；
+- 对同一事件存在多种解释，想用证据区分假设而非凭感觉选答案；
+- 希望对一段复杂经历做多轮、可修正的结构化复盘。
+
+## 不适用与安全边界
+
+- 它不是法律、医疗、心理、财务、安全或其他专业服务，不能替代现实世界的合格支持。
+- 出现即时或持续的安全、医疗、心理危机、法律、财务、伦理或权利风险时，应停止常规模型推演，先处理相应现实风险。
+- 不支持以历史概念为普通关系贴敌我标签，也不支持操纵、胁迫、歧视或伤害他人。
+- 不会用“主要矛盾”等术语合理化牺牲健康、安全、伦理或权利。
+- 信息不足、候选解释无法区分、过程边界不明或继续调查会造成不可接受风险时，不给确定判断。
+- 历史含义、模型抽象和现代转译必须分开；模型是组织认识的工具，不是永恒定律或确定答案。
+
+更完整的停止条件与专业边界见 [安全边界](skill/mao-situation-coach/references/boundaries.md)。
+
+## 使用示例
+
+可以在 Codex 中直接描述局面，例如：
+
+```text
+请用毛选教练帮我梳理这个局面：我们有三个潜在产品方向，团队对用户需求的判断彼此冲突。我不想马上选方向，想先分清哪些是事实、哪些是假设，以及还缺什么证据。
+```
+
+也可以明确限制本轮目标：
+
+```text
+先不要给行动建议。请帮我画出动态局面图，并指出最可能推翻当前判断的两个问题。
+```
+
+如果希望讨论行动，需要主动说明：
+
+```text
+如果现有信息已经达到相关模型的门槛，请给我条件式选项、风险边界和停止条件；如果没有，请只指出缺失证据。
+```
+
+## 安装
+
+仓库地址为 `https://github.com/guoleiycyc-sketch/mao-situation-coach`（已公开），Skill 位于 `skill/mao-situation-coach` 子目录，可直接克隆或让 Codex 安装。
+
+### 方式一：让 Codex 从 GitHub 安装
+
+在 Codex 中原样发送：
+
+```text
+请从 https://github.com/guoleiycyc-sketch/mao-situation-coach 的 skill/mao-situation-coach 子目录安装这个 Skill。
+```
+
+### 方式二：手动安装
+
+复制下面整个代码块，并把它作为一个单元运行。子 shell 启用 fail-fast；`git clone` 或 `cd` 失败时不会继续复制，目标已存在时也会明确停止：
+
+```bash
+(
+  set -eu
+  git clone https://github.com/guoleiycyc-sketch/mao-situation-coach.git
+  cd mao-situation-coach
+  CODEX_ROOT="${CODEX_HOME:-$HOME/.codex}"
+  TARGET="$CODEX_ROOT/skills/mao-situation-coach"
+  if [ -e "$TARGET" ]; then
+    echo "安装目标已存在：$TARGET" >&2
+    echo "请先备份或按更新步骤处理，已停止安装。" >&2
+    exit 1
+  fi
+  mkdir -p "$CODEX_ROOT/skills"
+  cp -R skill/mao-situation-coach "$TARGET"
+)
+```
+
+这是一段完整的脚本流程：已有目标会明确报错并以非零状态停止，不会继续复制或产生嵌套目录。请不要删除终止分支；需要替换已有安装时，按“更新”章节先备份或移走旧目录。
+
+## 验证安装
+
+复制下面整个代码块，并把它作为一个单元运行。它会定位实际安装目录，确认入口文件存在，检查 frontmatter、名称和入口引用，最后运行安装包自带的内容验证器：
+
+```bash
+(
+  set -eu
+  CODEX_ROOT="${CODEX_HOME:-$HOME/.codex}"
+  TARGET="$CODEX_ROOT/skills/mao-situation-coach"
+  export TARGET
+  test -f "$TARGET/SKILL.md"
+  python3 - <<'PY'
+import os
+import re
+from pathlib import Path
+
+target = Path(os.environ["TARGET"])
+skill = target / "SKILL.md"
+content = skill.read_text(encoding="utf-8")
+assert content.startswith("---\n"), "SKILL.md must begin with frontmatter"
+frontmatter = content.split("---\n", 2)[1]
+assert re.search(r"^name:\s*mao-situation-coach\s*$", frontmatter, re.MULTILINE), "unexpected skill name"
+references = re.findall(r"`(references/[^`]+\.md)`", content)
+missing = [reference for reference in references if not (target / reference).is_file()]
+assert references, "SKILL.md does not mention any reference files"
+assert not missing, f"missing referenced files: {missing}"
+print("quick structure validation passed")
+PY
+  python3 "$TARGET/scripts/validate_content.py" "$TARGET"
+)
+```
+
+## 更新
+
+复制下面整个代码块，并把它作为一个单元运行。`cd` 和 `git pull --ff-only` 都在移动旧安装之前执行；任一步失败，子 shell 都会立即停止。更新成功时会保留一个带时间戳的备份，并拒绝覆盖同名备份：
+
+```bash
+(
+  set -eu
+  cd mao-situation-coach
+  git pull --ff-only
+  CODEX_ROOT="${CODEX_HOME:-$HOME/.codex}"
+  TARGET="$CODEX_ROOT/skills/mao-situation-coach"
+  BACKUP="$TARGET.backup.$(date +%Y%m%d%H%M%S)"
+  if [ ! -e "$TARGET" ]; then
+    echo "没有找到旧安装：$TARGET" >&2
+    exit 1
+  fi
+  if [ -e "$BACKUP" ]; then
+    echo "备份目标已存在：$BACKUP" >&2
+    exit 1
+  fi
+  mv "$TARGET" "$BACKUP"
+  cp -R skill/mao-situation-coach "$TARGET"
+)
+```
+
+更新后重新运行“验证安装”中的完整流程。确认新版本可用后，再自行决定是否删除备份。
+
+## 卸载
+
+卸载目标由当前 Codex 根目录确定：
+
+```text
+${CODEX_HOME:-$HOME/.codex}/skills/mao-situation-coach
+```
+
+下面是删除操作，会移除计算出的精确 `TARGET` 及其中全部内容，且不能通过本仓库恢复未备份的本地修改。复制整个代码块并把它作为一个单元运行；先核对脚本显示的路径，只有明确输入 `DELETE` 才会执行删除：
+
+```bash
+(
+  set -eu
+  CODEX_ROOT="${CODEX_HOME:-$HOME/.codex}"
+  TARGET="$CODEX_ROOT/skills/mao-situation-coach"
+  echo "即将删除：$TARGET" >&2
+  printf '确认删除请输入 DELETE：' >&2
+  IFS= read -r CONFIRM
+  if [ "$CONFIRM" != "DELETE" ]; then
+    echo "未确认，已取消卸载。" >&2
+    exit 1
+  fi
+  rm -rf -- "$TARGET"
+)
+```
+
+## 仓库结构
+
+```text
+.
+├── README.md                         # 项目介绍、安装与使用指南
+├── LICENSE                           # 许可证
+├── skill/
+│   └── mao-situation-coach/          # 可安装的独立 Skill
+│       ├── SKILL.md                  # 执行入口
+│       ├── agents/                   # Codex 展示元数据
+│       ├── references/               # 路由、模型卡、对话、来源与边界
+│       └── scripts/                  # 内容验证器
+├── tests/                            # 自动化测试与行为案例
+└── docs/                             # 设计、规格与实现记录
+```
+
+关键文件：
+
+- [Skill 入口](skill/mao-situation-coach/SKILL.md)
+- [模型路由器](skill/mao-situation-coach/references/model-router.md)
+- [对话协议](skill/mao-situation-coach/references/dialogue-protocol.md)
+- [来源目录](skill/mao-situation-coach/references/source-catalog.md)
+- [安全边界](skill/mao-situation-coach/references/boundaries.md)
+- [行为案例](tests/mao-situation-coach-cases.md)
+- [内容验证器](skill/mao-situation-coach/scripts/validate_content.py)
+
+## 开发与测试
+
+仓库当前有 **25 项自动化测试**，并提供 5 组多轮行为案例；内容验证器检查 **31 个模型**，路由器定义 **10 条认知障碍分支**。
+
+从仓库根目录创建隔离环境、安装测试工具并运行 25 项自动化测试：
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install pytest
+.venv/bin/python -m pytest -q
+```
+
+内容验证器只使用 Python 标准库，无需额外安装依赖：
+
+```bash
+python3 skill/mao-situation-coach/scripts/validate_content.py skill/mao-situation-coach
+```
+
+行为案例及其验收点见 [tests/mao-situation-coach-cases.md](tests/mao-situation-coach-cases.md)。新增或修改模型时，应保持模型字段完整、来源等级与表达方式分离、路由门槛明确，并补充相应测试。
+
+## 证据与引用原则
+
+证据强度与表达形式是两个不同维度，不能混为一谈。
+
+**证据强度：**
+
+- **A 级**：原文直接提出对应命题、变量关系或操作步骤；可用逐字引文，也可用有来源释义。
+- **B 级**：同一逻辑在多篇原著中稳定重复后形成的综合判断；必须列出相互支持的篇目，不能伪装成某一篇的原句。
+- **C 级**：面向现代情境的转译工具，只用于帮助理解或操作，不表述为原著概念、术语或结论。
+
+**表达形式：**
+
+- **逐字引文**：必须按核心版本逐字核验，只支持引文直接陈述的命题。
+- **有来源释义**：明确标注卷次、篇名和日期的概括或重述，并明确它不是逐字引文。
+- **现代转译**：当代工具语言，必须保留适用条件与边界，不冒充原文或历史结论。
+
+引文不能代替对当前现实的调查，一条引文的等级也不会自动传递给由它延伸出的相关结论。版本政策、篇目登记和完整规则见 [Source Catalog](skill/mao-situation-coach/references/source-catalog.md)。
+
+## 当前状态
+
+当前成熟度：**可测试版本**。
+
+现阶段已有完整 Skill 入口、四族 31 个模型、10 条路由、对话协议、边界、来源目录、25 项自动化测试和行为案例。仓库已公开。接口、文案和模型卡在 1.0 之前仍可能调整，请以当前版本的验证结果和 Git 历史为准。
+
+## 引用与来源说明
+
+本项目的方法论与对话工艺有明确的来源谱系：《毛选》引用与版本政策、对话工艺出处、姊妹项目与许可声明，统一见 [ATTRIBUTION.md](ATTRIBUTION.md)。
+
+## License
+
+本项目使用 **MIT License**。在保留许可证及版权声明的条件下，可以使用、复制、修改和分发本项目；软件按“原样”提供，不附带任何明示或默示担保，作者或版权持有人不对使用本软件产生的索赔、损害或其他责任负责。完整条款见仓库根目录 `LICENSE` 文件。
+
+本项目不声称获得任何官方机构、出版方或历史人物的背书。
