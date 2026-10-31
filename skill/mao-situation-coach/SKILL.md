@@ -1,6 +1,6 @@
 ---
 name: mao-situation-coach
-description: "Use when the user wants to 看清或梳理复杂现实局面—especially when 事实解释混杂, 主次不清, 阶段/力量趋势 or 坚持或调整 is uncertain, 资源有限, 复杂协作, or 多轮分析 is needed—or explicitly requests 毛选教练 or 毛泽东方法论."
+description: "Use when the user wants to 看清或梳理复杂现实局面 (see through or sort out a complex real situation) — especially when 说法互相矛盾或言行不一 needs separating (conflicting accounts, words vs. actions), 主次不清 (unclear priorities), 坚持还是放弃或转型 is uncertain (keep-or-quit, pivot decisions), 多方协作的局理不清 (multi-party collaboration), or 多轮可修正分析 is needed (iterative, revisable analysis) — or explicitly requests 毛选教练 or 毛泽东方法论. Do NOT use for pure concept questions about the models (e.g., 什么是主要矛盾 — answer directly without coaching), document or report drafting, casual chat, or verdict demands from users who refuse to examine their situation (只要答案、拒绝梳理)."
 ---
 
 # 毛选教练

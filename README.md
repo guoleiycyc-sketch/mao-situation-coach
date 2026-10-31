@@ -124,6 +124,8 @@ Skill 包含四个模型族、共 31 个模型。下面仅列名称；模型的�
 
 仓库地址为 `https://github.com/guoleiycyc-sketch/mao-situation-coach`（已公开），Skill 位于 `skill/mao-situation-coach` 子目录，可直接克隆或让 Codex 安装。
 
+**前置条件**：macOS / Linux 与 `bash`；`git`；`python3`（「验证安装」需要——裸 macOS 没有该命令时，先运行 `xcode-select --install` 装 Command Line Tools）。安装脚本里的 `CODEX_HOME` 是 Codex 的主目录变量，默认取 `$HOME/.codex`，skill 会装到它下面的 `skills/` 里；只有你的 Codex 数据目录不在默认位置时才需要设置它。
+
 ### 方式一：让 Codex 从 GitHub 安装
 
 在 Codex 中原样发送：
@@ -132,9 +134,11 @@ Skill 包含四个模型族、共 31 个模型。下面仅列名称；模型的�
 请从 https://github.com/guoleiycyc-sketch/mao-situation-coach 的 skill/mao-situation-coach 子目录安装这个 Skill。
 ```
 
+装完建议运行下方「验证安装」的完整代码块自证一次（它会确认入口文件、结构校验与内容验证器全部通过）。如果 Codex 端安装失败或不可用，改用方式二手动安装，效果相同。
+
 ### 方式二：手动安装
 
-复制下面整个代码块，并把它作为一个单元运行。子 shell 启用 fail-fast；`git clone` 或 `cd` 失败时不会继续复制，目标已存在时也会明确停止：
+先 `cd` 到你想长期存放代码的目录（这个克隆目录以后「更新」时还要用到，不要放在临时位置），然后复制下面整个代码块，并把它作为一个单元运行。子 shell 启用 fail-fast；`git clone` 或 `cd` 失败时不会继续复制，目标已存在时也会明确停止：
 
 ```bash
 (
@@ -189,7 +193,7 @@ PY
 
 ## 更新
 
-复制下面整个代码块，并把它作为一个单元运行。`cd` 和 `git pull --ff-only` 都在移动旧安装之前执行；任一步失败，子 shell 都会立即停止。更新成功时会保留一个带时间戳的备份，并拒绝覆盖同名备份：
+复制下面整个代码块，并把它作为一个单元运行。**运行前提**：脚本第一行 `cd mao-situation-coach` 是相对路径——请在当初用方式二克隆仓库的位置运行；用方式一安装、本地没有克隆的客户，更新时请先按「卸载」移除旧目录，再按「安装·方式二」重装最新版。`cd` 和 `git pull --ff-only` 都在移动旧安装之前执行；任一步失败，子 shell 都会立即停止。更新成功时会保留一个带时间戳的备份，并拒绝覆盖同名备份：
 
 ```bash
 (
@@ -240,11 +244,18 @@ ${CODEX_HOME:-$HOME/.codex}/skills/mao-situation-coach
 )
 ```
 
+卸载只删除 `TARGET` 本身；「更新」留下的备份目录（`mao-situation-coach.backup.<时间戳>`）不会被一并清理，确认不再需要时请手动删除：
+
+```bash
+rm -rf -- "${CODEX_HOME:-$HOME/.codex}"/skills/mao-situation-coach.backup.*
+```
+
 ## 仓库结构
 
 ```text
 .
 ├── README.md                         # 项目介绍、安装与使用指南
+├── ATTRIBUTION.md                    # 引用与来源说明
 ├── LICENSE                           # 许可证
 ├── skill/
 │   └── mao-situation-coach/          # 可安装的独立 Skill
@@ -252,8 +263,7 @@ ${CODEX_HOME:-$HOME/.codex}/skills/mao-situation-coach
 │       ├── agents/                   # Codex 展示元数据
 │       ├── references/               # 路由、模型卡、对话、来源与边界
 │       └── scripts/                  # 内容验证器
-├── tests/                            # 自动化测试与行为案例
-└── docs/                             # 设计、规格与实现记录
+└── tests/                            # 自动化测试与行为案例
 ```
 
 关键文件：
